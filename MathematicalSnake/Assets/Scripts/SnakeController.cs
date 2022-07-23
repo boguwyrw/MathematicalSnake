@@ -4,13 +4,19 @@ using UnityEngine;
 
 public class SnakeController : MonoBehaviour
 {
-    protected SnakeDirections SnakeDirection;
     protected Vector3 ActualPosition;
+    protected Quaternion ActualRotation;
 
+    [HideInInspector] public SnakeDirections SnakeDirection;
     [HideInInspector] public Vector3 PreviousPosition;
+    [HideInInspector] public Quaternion PreviousRotation;
 
     protected const float MovementStep = 1.0f;
     protected const float RotationStep = 90.0f;
+
+    protected const int FutureValue = 0;
+    protected const int PresentValue = 1;
+    protected const int PastValue = 2;
 
     protected virtual void Awake()
     {
@@ -20,6 +26,7 @@ public class SnakeController : MonoBehaviour
     protected virtual void Start()
     {
         ActualPosition = transform.localPosition;
+        ActualRotation = transform.localRotation;
     }
 
     protected virtual void Update()
@@ -30,7 +37,7 @@ public class SnakeController : MonoBehaviour
         }
     }
 
-    private void LateUpdate()
+    protected virtual void LateUpdate()
     {
         if (SnakeManager.Instance.SnakeCanMove)
         {
@@ -40,27 +47,46 @@ public class SnakeController : MonoBehaviour
 
     private void SnakeMovementSystem()
     {
-        switch(SnakeDirection)
+        Vector3 tempActualPosition;
+        Quaternion tempActualRotation;
+
+        switch (SnakeDirection)
         {
             case SnakeDirections.SNAKE_FORWARD:
-                PreviousPosition = ActualPosition;
+                tempActualPosition = ActualPosition;
+                tempActualRotation = ActualRotation;
                 ActualPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z + MovementStep);
+                ActualRotation = transform.localRotation;
                 transform.localPosition = ActualPosition;
+                PreviousPosition = tempActualPosition;
+                PreviousRotation = tempActualRotation;
                 break;
             case SnakeDirections.SNAKE_RIGHT:
-                PreviousPosition = ActualPosition;
+                tempActualPosition = ActualPosition;
+                tempActualRotation = ActualRotation;
                 ActualPosition = new Vector3(transform.localPosition.x + MovementStep, transform.localPosition.y, transform.localPosition.z);
+                ActualRotation = transform.localRotation;
                 transform.localPosition = ActualPosition;
+                PreviousPosition = tempActualPosition;
+                PreviousRotation = tempActualRotation;
                 break;
             case SnakeDirections.SNAKE_LEFT:
-                PreviousPosition = ActualPosition;
+                tempActualPosition = ActualPosition;
+                tempActualRotation = ActualRotation;
                 ActualPosition = new Vector3(transform.localPosition.x - MovementStep, transform.localPosition.y, transform.localPosition.z);
+                ActualRotation = transform.localRotation;
                 transform.localPosition = ActualPosition;
+                PreviousPosition = tempActualPosition;
+                PreviousRotation = tempActualRotation;
                 break;
             case SnakeDirections.SNAKE_BACK:
-                PreviousPosition = ActualPosition;
+                tempActualPosition = ActualPosition;
+                tempActualRotation = ActualRotation;
                 ActualPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z - MovementStep);
+                ActualRotation = transform.localRotation;
                 transform.localPosition = ActualPosition;
+                PreviousPosition = tempActualPosition;
+                PreviousRotation = tempActualRotation;
                 break;
         }
     }

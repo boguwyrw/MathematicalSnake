@@ -28,12 +28,10 @@ public class SnakeManager : MonoBehaviour
 
     [HideInInspector] public float MovementSpeed = 0.0f;
     [HideInInspector] public bool SnakeCanMove = false;
-    [HideInInspector] public List<GameObject> SnakeElements = new List<GameObject>();
 
     private void Start()
     {
         MovementSpeed = FirstLevelSpeed;
-        SnakeElements.Add(transform.GetChild(0).gameObject);
     }
 
     private void Update()
@@ -44,16 +42,13 @@ public class SnakeManager : MonoBehaviour
             SnakeCanMove = true;
             MovementSpeed = FirstLevelSpeed;
         }
+    }
 
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            SnakeController snakeController = SnakeElements[transform.childCount - 1].GetComponent<SnakeController>();
+    public void CreateSnakeBody()
+    {
+        GameObject bodyClone = Instantiate(_bodyPrefab);
+        bodyClone.transform.parent = transform;
 
-            Vector3 bodyClonePosition = snakeController.PreviousPosition;
-            Quaternion bodyCloneRotation = SnakeElements[transform.childCount - 1].transform.localRotation;
-
-            GameObject bodyClone = Instantiate(_bodyPrefab, bodyClonePosition, bodyCloneRotation);
-            bodyClone.transform.parent = transform;
-        }
+        MathematicalGenerator.Instance.GenerateMathematicalEquation();
     }
 }

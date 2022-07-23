@@ -1,0 +1,8 @@
+public enum MathematicalStages
+{
+    CHOOSE_FIRST_NO,
+    CHOOSE_OPERATION,
+    CHOOSE_SECOND_NO,
+    CHOOSE_EQUAL_SIGN,
+    CHOOSE_RESULT
+}

@@ -16,9 +16,9 @@ public class SnakeHeadController : SnakeController
 
     protected override void Update()
     {
-        base.Update();
         SnakeTurnRight();
         SnakeTurnLeft();
+        base.Update();
     }
 
     private void SnakeTurnRight()
@@ -89,4 +89,18 @@ public class SnakeHeadController : SnakeController
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == 8)
+        {
+            other.gameObject.SetActive(false);
+            SnakeManager.Instance.CreateSnakeBody();
+            //MathematicalGenerator.Instance.GenerateMathematicalEquation();
+        }
+
+        if (other.gameObject.layer == 7)
+        {
+            Debug.Log("ZACZYNASZ OD POCZATKU");
+        }
+    }
 }
