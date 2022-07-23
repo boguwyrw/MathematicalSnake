@@ -11,12 +11,12 @@ public class SnakeHeadController : SnakeController
 
     protected override void Start()
     {
-        ActualPosition = transform.localPosition;
         base.Start();
     }
 
     protected override void Update()
     {
+        base.Update();
         SnakeTurnRight();
         SnakeTurnLeft();
     }

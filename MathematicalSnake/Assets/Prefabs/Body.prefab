@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 804583054082185192}
   - component: {fileID: 804583054082185195}
   - component: {fileID: 804583054082185199}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108,3 +108,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a401c28219451746bcd1fcc474812ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PreviousPosition: {x: 0, y: 0, z: 0}

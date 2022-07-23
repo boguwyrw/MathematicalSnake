@@ -5,12 +5,10 @@ using UnityEngine;
 public class SnakeController : MonoBehaviour
 {
     protected SnakeDirections SnakeDirection;
-    protected float MovementSpeed = 0.0f;
     protected Vector3 ActualPosition;
 
     [HideInInspector] public Vector3 PreviousPosition;
 
-    protected const float FirstLevelSpeed = 1.1f;
     protected const float MovementStep = 1.0f;
     protected const float RotationStep = 90.0f;
 
@@ -21,18 +19,26 @@ public class SnakeController : MonoBehaviour
 
     protected virtual void Start()
     {
-        MovementSpeed = FirstLevelSpeed;
-        //ActualPosition = transform.localPosition;
-
-        InvokeRepeating("SnakeMovementSystem", 0.0f, MovementSpeed);
+        ActualPosition = transform.localPosition;
     }
 
     protected virtual void Update()
     {
-        
+        if (SnakeManager.Instance.SnakeCanMove)
+        {
+            SnakeMovementSystem();
+        }
     }
 
-    protected virtual void SnakeMovementSystem()
+    private void LateUpdate()
+    {
+        if (SnakeManager.Instance.SnakeCanMove)
+        {
+            SnakeManager.Instance.SnakeCanMove = false;
+        }
+    }
+
+    private void SnakeMovementSystem()
     {
         switch(SnakeDirection)
         {
