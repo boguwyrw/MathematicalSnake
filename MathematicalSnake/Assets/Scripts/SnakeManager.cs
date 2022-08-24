@@ -39,6 +39,7 @@ public class SnakeManager : MonoBehaviour
 
     private int _levelSpeedIndex = 0;
     private int _actualSnakeLength = 0;
+    private int _nextLevelStep = 0;
 
     [HideInInspector] public float MovementSpeed = 0.0f;
     [HideInInspector] public bool SnakeCanMove = false;
@@ -54,7 +55,7 @@ public class SnakeManager : MonoBehaviour
         MovementSpeed = _currentMovementSpeed;
 
         _actualSnakeLength = transform.childCount;
-
+        _nextLevelStep = _levelStepIncrease + _actualSnakeLength;
         _gameUIManager.UpdateSnakeLengthText(_actualSnakeLength - 1);
     }
 
@@ -78,15 +79,12 @@ public class SnakeManager : MonoBehaviour
     {
         if (_levelSpeedIndex < _levelsSpeed.Length - 1)
         {
-            int nextLevelStep = _levelStepIncrease + _actualSnakeLength;
-            int snakeLength = transform.childCount;
-            if (snakeLength == nextLevelStep)
+            if (_actualSnakeLength == _nextLevelStep)
             {
                 _levelSpeedIndex += 1;
-            Debug.Log("_levelSpeedIndex: " + _levelSpeedIndex);
-
                 _currentMovementSpeed = _levelsSpeed[_levelSpeedIndex];
                 //MovementSpeed = 0.0f;
+                _nextLevelStep = _levelStepIncrease + _actualSnakeLength;
             }
         }
         _actualSnakeLength = transform.childCount;

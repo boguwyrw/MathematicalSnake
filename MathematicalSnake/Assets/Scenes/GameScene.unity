@@ -1128,3 +1128,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _numberCanvasPrefab: {fileID: 34916392625983996, guid: b044c0c48f1615b46ad6b2188e3b95a5, type: 3}
+  _camera: {fileID: 963194227}

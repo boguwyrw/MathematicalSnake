@@ -25,6 +25,8 @@ public class MathematicalGenerator : MonoBehaviour
 
     [SerializeField] private GameObject _numberCanvasPrefab;
 
+    [SerializeField] private Camera _camera;
+
     private MathematicalStages mathematicalStage;
 
     private int _positionX = 0;
@@ -105,6 +107,12 @@ public class MathematicalGenerator : MonoBehaviour
         _numberCanvasClone = Instantiate(_numberCanvasPrefab);
     }
 
+    private void SetCanvasCamera()
+    {
+        Canvas cloneCanvas = _numberCanvasClone.GetComponent<Canvas>();
+        cloneCanvas.worldCamera = _camera;
+    }
+
     private void GenerateFirstRandomNumber()
     {
         GenerateRandomPosition();
@@ -120,6 +128,7 @@ public class MathematicalGenerator : MonoBehaviour
         {
             GenerateCanvasClone();
             numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
+            SetCanvasCamera();
         }
         _randomFirstNumber = Random.Range(0, 100) + 1;
         numberText.text = _randomFirstNumber.ToString();
@@ -145,6 +154,7 @@ public class MathematicalGenerator : MonoBehaviour
             GenerateCanvasClone();
             numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
             numberText.fontSize = 23;
+            SetCanvasCamera();
         }
         _operationIndex = Random.Range(0, _minOperationsLength - 1);
         numberText.text = _mathematicalOperations[_operationIndex];
@@ -169,10 +179,14 @@ public class MathematicalGenerator : MonoBehaviour
         {
             GenerateCanvasClone();
             numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
+            SetCanvasCamera();
         }
 
         switch (_operationIndex)
         {
+            case 0:
+                _randomSecondNumber = Random.Range(0, 100) + 1;
+                break;
             case 1:
                 _randomSecondNumber = Random.Range(1, _randomFirstNumber);
                 break;
@@ -192,9 +206,6 @@ public class MathematicalGenerator : MonoBehaviour
                     _randomSecondNumber = Random.Range(0, _randomFirstNumber) + 1;
                 }
                 while ((_randomFirstNumber % _randomSecondNumber) != 0);
-                break;
-            default:
-                _randomSecondNumber = Random.Range(0, 100) + 1;
                 break;
         }
         
@@ -221,6 +232,7 @@ public class MathematicalGenerator : MonoBehaviour
             GenerateCanvasClone();
             numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
             numberText.fontSize = 23;
+            SetCanvasCamera();
         }
         numberText.text = _mathematicalOperations[4];
 
@@ -238,17 +250,18 @@ public class MathematicalGenerator : MonoBehaviour
 
         if (transform.childCount > _minOperationsLength)
         {
-            Debug.Log("GenerateResult -> if");
+            //Debug.Log("GenerateResult -> if");
             _numberCanvasClone = transform.GetChild(4).gameObject;
             numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
             _numberCanvasClone.SetActive(true);
         }
         else
         {
-            Debug.Log("GenerateResult -> else");
+            //Debug.Log("GenerateResult -> else");
             GenerateCanvasClone();
             _numberCanvasClone.layer = 9;
             numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
+            SetCanvasCamera();
         }
 
         switch (_operationIndex)
@@ -295,6 +308,7 @@ public class MathematicalGenerator : MonoBehaviour
             {
                 GenerateCanvasClone();
                 numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
+                SetCanvasCamera();
             }
 
             int fakeResult = (Random.Range(0, _result) + 1) + (Random.Range(1, _result + 1) + 1);
