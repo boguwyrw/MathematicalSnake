@@ -24,14 +24,34 @@ public class SnakeManager : MonoBehaviour
 
     [SerializeField] private GameObject _bodyPrefab;
 
-    private float FirstLevelSpeed = 1.1f;
+    [SerializeField] private float _firstLevelSpeed = 1.1f;
+    [SerializeField] private float _secondLevelSpeed = 0.9f;
+    [SerializeField] private float _thirdLevelSpeed = 0.7f;
+    [SerializeField] private float _fourthLevelSpeed = 0.5f;
+    [SerializeField] private float _fifthLevelSpeed = 0.3f;
+
+    [SerializeField] private int _levelStepIncrease = 2;
+
+    private float[] _levelsSpeed = new float[5];
+    private float _currentMovementSpeed;
+
+    private int _levelSpeedIndex = 0;
+    private int _actualSnakeLength = 0;
 
     [HideInInspector] public float MovementSpeed = 0.0f;
     [HideInInspector] public bool SnakeCanMove = false;
 
     private void Start()
     {
-        MovementSpeed = FirstLevelSpeed;
+        _levelsSpeed[0] = _firstLevelSpeed;
+        _levelsSpeed[1] = _secondLevelSpeed;
+        _levelsSpeed[2] = _thirdLevelSpeed;
+        _levelsSpeed[3] = _fourthLevelSpeed;
+        _levelsSpeed[4] = _fifthLevelSpeed;
+        _currentMovementSpeed = _levelsSpeed[_levelSpeedIndex];
+        MovementSpeed = _currentMovementSpeed;
+
+        _actualSnakeLength = transform.childCount;
     }
 
     private void Update()
@@ -40,15 +60,30 @@ public class SnakeManager : MonoBehaviour
         if (MovementSpeed <= 0.0f)
         {
             SnakeCanMove = true;
-            MovementSpeed = FirstLevelSpeed;
-        }
+            MovementSpeed = _currentMovementSpeed;
+        } 
     }
 
     public void CreateSnakeBody()
     {
         GameObject bodyClone = Instantiate(_bodyPrefab);
-        bodyClone.transform.parent = transform;
+        bodyClone.transform.SetParent(transform);
+    }
 
-        MathematicalGenerator.Instance.GenerateMathematicalEquation();
+    public void SetNextLevelSpeed()
+    {
+        int nextLevelStep = _levelStepIncrease + _actualSnakeLength;
+        int snakeLength = transform.childCount;
+        if (snakeLength == nextLevelStep)
+        {
+            if (_levelSpeedIndex < _levelsSpeed.Length - 1)
+            {
+                _levelSpeedIndex++;
+            }
+
+            _currentMovementSpeed = _levelsSpeed[_levelSpeedIndex];
+            MovementSpeed = 0.0f;
+            _actualSnakeLength = transform.childCount;
+        }
     }
 }

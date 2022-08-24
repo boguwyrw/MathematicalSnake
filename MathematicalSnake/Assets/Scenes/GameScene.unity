@@ -261,6 +261,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bodyPrefab: {fileID: 804583054082185194, guid: b34e2596b89cd19439b6933f2457e889, type: 3}
+  _firstLevelSpeed: 1.1
+  _secondLevelSpeed: 0.9
+  _thirdLevelSpeed: 0.7
+  _fourthLevelSpeed: 0.5
+  _fifthLevelSpeed: 0.3
+  _levelStepIncrease: 2
   MovementSpeed: 0
   SnakeCanMove: 0
 --- !u!1 &963194225

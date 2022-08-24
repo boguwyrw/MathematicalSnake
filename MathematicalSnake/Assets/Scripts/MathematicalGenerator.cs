@@ -29,10 +29,13 @@ public class MathematicalGenerator : MonoBehaviour
 
     private int _positionX = 0;
     private int _positionZ = 0;
-    private int randomFirstNumber = 0;
-    private int randomSecondNumber = 0;
+    private int _randomFirstNumber = 0;
+    private int _randomSecondNumber = 0;
     private int _result = 0;
+    private int _operationIndex = 0;
+    private int _minOperationsLength = 0;
     private string[] _mathematicalOperations = new string[5];
+    private GameObject _numberCanvasClone;
 
     private void Start()
     {
@@ -44,7 +47,21 @@ public class MathematicalGenerator : MonoBehaviour
         _mathematicalOperations[3] = "/";
         _mathematicalOperations[4] = "=";
 
+        _minOperationsLength = _mathematicalOperations.Length;
+
         GenerateMathematicalEquation();
+    }
+
+    private void CleanMathematicalEquations()
+    {
+        int mathematicalEquationsLength = transform.childCount;
+        if (mathematicalEquationsLength > 0)
+        {
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                transform.GetChild(i).gameObject.SetActive(false);
+            }
+        }
     }
 
     public void GenerateMathematicalEquation()
@@ -52,6 +69,7 @@ public class MathematicalGenerator : MonoBehaviour
         switch(mathematicalStage)
         {
             case MathematicalStages.CHOOSE_FIRST_NO:
+                CleanMathematicalEquations();
                 GenerateFirstRandomNumber();
                 break;
             case MathematicalStages.CHOOSE_OPERATION:
@@ -65,6 +83,7 @@ public class MathematicalGenerator : MonoBehaviour
                 break;
             case MathematicalStages.CHOOSE_RESULT:
                 GenerateResult();
+                GenerateFakeResult();
                 break;
         }
     }
@@ -77,21 +96,35 @@ public class MathematicalGenerator : MonoBehaviour
 
     private void SetRandomPosition(Transform randPos)
     {
-        randPos.parent = transform;
+        randPos.SetParent(transform);
         randPos.localPosition = new Vector3(_positionX, randPos.localPosition.y, _positionZ);
+    }
+
+    private void GenerateCanvasClone()
+    {
+        _numberCanvasClone = Instantiate(_numberCanvasPrefab);
     }
 
     private void GenerateFirstRandomNumber()
     {
         GenerateRandomPosition();
 
-        GameObject numberCanvasClone = Instantiate(_numberCanvasPrefab);
+        Text numberText;
+        if (transform.childCount > _minOperationsLength)
+        {
+            _numberCanvasClone = transform.GetChild(0).gameObject;
+            numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
+            _numberCanvasClone.SetActive(true);
+        }
+        else
+        {
+            GenerateCanvasClone();
+            numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
+        }
+        _randomFirstNumber = Random.Range(0, 100) + 1;
+        numberText.text = _randomFirstNumber.ToString();
 
-        Text numberText = numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
-        randomFirstNumber = Random.Range(0, 100) + 1;
-        numberText.text = randomFirstNumber.ToString();
-
-        SetRandomPosition(numberCanvasClone.transform);
+        SetRandomPosition(_numberCanvasClone.transform);
 
         mathematicalStage = MathematicalStages.CHOOSE_OPERATION;
     }
@@ -100,12 +133,23 @@ public class MathematicalGenerator : MonoBehaviour
     {
         GenerateRandomPosition();
 
-        GameObject numberCanvasClone = Instantiate(_numberCanvasPrefab);
+        Text numberText;
+        if (transform.childCount > _minOperationsLength)
+        {
+            _numberCanvasClone = transform.GetChild(1).gameObject;
+            numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
+            _numberCanvasClone.SetActive(true);
+        }
+        else
+        {
+            GenerateCanvasClone();
+            numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
+            numberText.fontSize = 23;
+        }
+        _operationIndex = Random.Range(0, _minOperationsLength - 1);
+        numberText.text = _mathematicalOperations[_operationIndex];
 
-        Text numberText = numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
-        numberText.text = _mathematicalOperations[0];
-
-        SetRandomPosition(numberCanvasClone.transform);
+        SetRandomPosition(_numberCanvasClone.transform);
 
         mathematicalStage = MathematicalStages.CHOOSE_SECOND_NO;
     }
@@ -114,13 +158,49 @@ public class MathematicalGenerator : MonoBehaviour
     {
         GenerateRandomPosition();
 
-        GameObject numberCanvasClone = Instantiate(_numberCanvasPrefab);
+        Text numberText;
+        if (transform.childCount > _minOperationsLength)
+        {
+            _numberCanvasClone = transform.GetChild(2).gameObject;
+            numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
+            _numberCanvasClone.SetActive(true);
+        }
+        else
+        {
+            GenerateCanvasClone();
+            numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
+        }
 
-        Text numberText = numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
-        randomSecondNumber = Random.Range(0, 100) + 1;
-        numberText.text = randomSecondNumber.ToString();
+        switch (_operationIndex)
+        {
+            case 1:
+                _randomSecondNumber = Random.Range(1, _randomFirstNumber);
+                break;
+            case 2:
+                if (_randomFirstNumber > 10)
+                {
+                    _randomSecondNumber = Random.Range(0, 10) + 1;
+                }
+                else
+                {
+                    _randomSecondNumber = Random.Range(0, 100) + 1;
+                }
+                break;
+            case 3:
+                do
+                {
+                    _randomSecondNumber = Random.Range(0, _randomFirstNumber) + 1;
+                }
+                while ((_randomFirstNumber % _randomSecondNumber) != 0);
+                break;
+            default:
+                _randomSecondNumber = Random.Range(0, 100) + 1;
+                break;
+        }
+        
+        numberText.text = _randomSecondNumber.ToString();
 
-        SetRandomPosition(numberCanvasClone.transform);
+        SetRandomPosition(_numberCanvasClone.transform);
 
         mathematicalStage = MathematicalStages.CHOOSE_EQUAL_SIGN;
     }
@@ -129,12 +209,22 @@ public class MathematicalGenerator : MonoBehaviour
     {
         GenerateRandomPosition();
 
-        GameObject numberCanvasClone = Instantiate(_numberCanvasPrefab);
-
-        Text numberText = numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
+        Text numberText;
+        if (transform.childCount > _minOperationsLength)
+        {
+            _numberCanvasClone = transform.GetChild(3).gameObject;
+            numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
+            _numberCanvasClone.SetActive(true);
+        }
+        else
+        {
+            GenerateCanvasClone();
+            numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
+            numberText.fontSize = 23;
+        }
         numberText.text = _mathematicalOperations[4];
 
-        SetRandomPosition(numberCanvasClone.transform);
+        SetRandomPosition(_numberCanvasClone.transform);
 
         mathematicalStage = MathematicalStages.CHOOSE_RESULT;
     }
@@ -143,13 +233,77 @@ public class MathematicalGenerator : MonoBehaviour
     {
         GenerateRandomPosition();
 
-        GameObject numberCanvasClone = Instantiate(_numberCanvasPrefab);
+        Text numberText;
+        if (transform.childCount > _minOperationsLength)
+        {
+            _numberCanvasClone = transform.GetChild(4).gameObject;
+            numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
+            _numberCanvasClone.SetActive(true);
+        }
+        else
+        {
+            GenerateCanvasClone();
+            _numberCanvasClone.tag = "Result";
+            numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
+        }
 
-        Text numberText = numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
-        _result = randomFirstNumber + randomSecondNumber; // trzeba zmienic aby odpowiadalo pozniejszemu losowaniu dzialania matematycznego
+        switch (_operationIndex)
+        {
+            case 0:
+                _result = _randomFirstNumber + _randomSecondNumber;
+                break;
+            case 1:
+                _result = _randomFirstNumber - _randomSecondNumber;
+                break;
+            case 2:
+                _result = _randomFirstNumber * _randomSecondNumber;
+                break;
+            case 3:
+                _result = _randomFirstNumber / _randomSecondNumber;
+                break;
+        }
+        
         numberText.text = _result.ToString();
 
-        SetRandomPosition(numberCanvasClone.transform);
+        SetRandomPosition(_numberCanvasClone.transform);
+    }
+
+    private void GenerateFakeResult()
+    {
+        int snakeLength = SnakeManager.Instance.transform.childCount;
+        int maxOperationsLength = transform.childCount;
+
+        for (int i = 0; i < snakeLength; i++)
+        {
+            GenerateRandomPosition();
+
+            Text numberText;
+            int operationsLengthIndex = _minOperationsLength + i;
+            
+            if (operationsLengthIndex < maxOperationsLength)
+            {
+                _numberCanvasClone = transform.GetChild(operationsLengthIndex).gameObject;
+                numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
+                _numberCanvasClone.SetActive(true);    
+            }
+            else
+            {
+                GenerateCanvasClone();
+                numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
+            }
+
+            int fakeResult = (Random.Range(0, _result) + 1) + (Random.Range(1, _result + 1) + 1);
+            int tempFakeResult = fakeResult;
+
+            while (fakeResult == tempFakeResult)
+            {
+                fakeResult = (Random.Range(0, _result) + 1) + (Random.Range(1, _result + 1) + 1);
+            }
+
+            numberText.text = fakeResult.ToString();
+
+            SetRandomPosition(_numberCanvasClone.transform);
+        }
 
         mathematicalStage = MathematicalStages.CHOOSE_FIRST_NO;
     }
