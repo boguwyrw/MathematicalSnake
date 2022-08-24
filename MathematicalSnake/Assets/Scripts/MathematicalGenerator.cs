@@ -234,16 +234,20 @@ public class MathematicalGenerator : MonoBehaviour
         GenerateRandomPosition();
 
         Text numberText;
+        _numberCanvasClone = null;
+
         if (transform.childCount > _minOperationsLength)
         {
+            Debug.Log("GenerateResult -> if");
             _numberCanvasClone = transform.GetChild(4).gameObject;
             numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
             _numberCanvasClone.SetActive(true);
         }
         else
         {
+            Debug.Log("GenerateResult -> else");
             GenerateCanvasClone();
-            _numberCanvasClone.tag = "Result";
+            _numberCanvasClone.layer = 9;
             numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
         }
 
@@ -272,6 +276,7 @@ public class MathematicalGenerator : MonoBehaviour
     {
         int snakeLength = SnakeManager.Instance.transform.childCount;
         int maxOperationsLength = transform.childCount;
+        _numberCanvasClone = null;
 
         for (int i = 0; i < snakeLength; i++)
         {

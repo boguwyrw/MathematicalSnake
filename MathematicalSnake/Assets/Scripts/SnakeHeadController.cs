@@ -91,13 +91,15 @@ public class SnakeHeadController : SnakeController
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == 8 && !other.gameObject.tag.Equals("Result"))
+        //if (other.gameObject.layer == 8 && !other.gameObject.tag.Equals("Result"))
+        if (other.gameObject.layer == 8)
         {
             other.gameObject.SetActive(false);
             MathematicalGenerator.Instance.GenerateMathematicalEquation();
         }
 
-        if (other.gameObject.layer == 8 && other.gameObject.tag.Equals("Result"))
+        //if (other.gameObject.layer == 8 && other.gameObject.tag.Equals("Result"))
+        if (other.gameObject.layer == 9)
         {
             other.gameObject.SetActive(false);
             SnakeManager.Instance.CreateSnakeBody();

@@ -24,6 +24,8 @@ public class SnakeManager : MonoBehaviour
 
     [SerializeField] private GameObject _bodyPrefab;
 
+    [SerializeField] private GameUIManager _gameUIManager;
+
     [SerializeField] private float _firstLevelSpeed = 1.1f;
     [SerializeField] private float _secondLevelSpeed = 0.9f;
     [SerializeField] private float _thirdLevelSpeed = 0.7f;
@@ -52,6 +54,8 @@ public class SnakeManager : MonoBehaviour
         MovementSpeed = _currentMovementSpeed;
 
         _actualSnakeLength = transform.childCount;
+
+        _gameUIManager.UpdateSnakeLengthText(_actualSnakeLength - 1);
     }
 
     private void Update()
@@ -61,7 +65,7 @@ public class SnakeManager : MonoBehaviour
         {
             SnakeCanMove = true;
             MovementSpeed = _currentMovementSpeed;
-        } 
+        }
     }
 
     public void CreateSnakeBody()
@@ -72,18 +76,21 @@ public class SnakeManager : MonoBehaviour
 
     public void SetNextLevelSpeed()
     {
-        int nextLevelStep = _levelStepIncrease + _actualSnakeLength;
-        int snakeLength = transform.childCount;
-        if (snakeLength == nextLevelStep)
+        if (_levelSpeedIndex < _levelsSpeed.Length - 1)
         {
-            if (_levelSpeedIndex < _levelsSpeed.Length - 1)
+            int nextLevelStep = _levelStepIncrease + _actualSnakeLength;
+            int snakeLength = transform.childCount;
+            if (snakeLength == nextLevelStep)
             {
-                _levelSpeedIndex++;
-            }
+                _levelSpeedIndex += 1;
+            Debug.Log("_levelSpeedIndex: " + _levelSpeedIndex);
 
-            _currentMovementSpeed = _levelsSpeed[_levelSpeedIndex];
-            MovementSpeed = 0.0f;
-            _actualSnakeLength = transform.childCount;
+                _currentMovementSpeed = _levelsSpeed[_levelSpeedIndex];
+                //MovementSpeed = 0.0f;
+            }
         }
+        _actualSnakeLength = transform.childCount;
+
+        _gameUIManager.UpdateSnakeLengthText(_actualSnakeLength - 1);
     }
 }
