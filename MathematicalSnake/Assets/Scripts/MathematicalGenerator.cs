@@ -250,14 +250,12 @@ public class MathematicalGenerator : MonoBehaviour
 
         if (transform.childCount > _minOperationsLength)
         {
-            //Debug.Log("GenerateResult -> if");
             _numberCanvasClone = transform.GetChild(4).gameObject;
             numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
             _numberCanvasClone.SetActive(true);
         }
         else
         {
-            //Debug.Log("GenerateResult -> else");
             GenerateCanvasClone();
             _numberCanvasClone.layer = 9;
             numberText = _numberCanvasClone.transform.GetChild(0).GetComponent<Text>();
@@ -316,7 +314,8 @@ public class MathematicalGenerator : MonoBehaviour
 
             while (fakeResult == tempFakeResult)
             {
-                fakeResult = (Random.Range(0, _result) + 1) + (Random.Range(1, _result + 1) + 1);
+                int temprandomRange = Random.Range(1, 100) + 1;
+                fakeResult = (Random.Range(0, _result) + 1) + (Random.Range(1, temprandomRange) + 1);
             }
 
             numberText.text = fakeResult.ToString();
