@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SnakeHeadController : SnakeController
 {
+    [SerializeField] private ParticleSystem _bumpEffect;
+
     protected override void Awake()
     {
         base.Awake();
@@ -89,25 +91,36 @@ public class SnakeHeadController : SnakeController
         }
     }
 
+    private void BumpMainFunctionality()
+    {
+        Time.timeScale = 0.0f;
+        _bumpEffect.Play();
+    }
+
     private void OnTriggerEnter(Collider other)
     {
+        if (other.gameObject.layer == 7)
+        {
+            BumpMainFunctionality();
+        }
+		
         if (other.gameObject.layer == 8)
         {
             other.gameObject.SetActive(false);
             MathematicalGenerator.Instance.GenerateMathematicalEquation();
         }
-        else if (other.gameObject.layer == 9)
+
+        if (other.gameObject.layer == 9)
         {
             other.gameObject.SetActive(false);
             SnakeManager.Instance.CreateSnakeBody();
             MathematicalGenerator.Instance.GenerateMathematicalEquation();
             SnakeManager.Instance.SetNextLevelSpeed();
         }
-		/*
-        if (other.gameObject.layer == 7)
+		
+        if (other.gameObject.layer == 10)
         {
-            Debug.Log("ZACZYNASZ OD POCZATKU");
+            BumpMainFunctionality();
         }
-		*/
     }
 }

@@ -83,7 +83,7 @@ public class SnakeManager : MonoBehaviour
             {
                 _levelSpeedIndex += 1;
                 _currentMovementSpeed = _levelsSpeed[_levelSpeedIndex];
-                //MovementSpeed = 0.0f;
+                MovementSpeed = 0.0f;
                 _nextLevelStep = _levelStepIncrease + _actualSnakeLength;
             }
         }
